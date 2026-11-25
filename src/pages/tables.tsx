@@ -1,5 +1,5 @@
-import BasicTable from "../components/tables/basic";
-import { UsersPage } from "../components/tables/users";
+import BasicTable from "../components/tables/basic-useTable/basic";
+import { UsersPage } from "../components/tables/basic-useAppTable/users";
 
 export const TanstackTables = () => {
   return (

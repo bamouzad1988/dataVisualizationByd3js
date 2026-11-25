@@ -1,47 +1,19 @@
-import { userResponse, type User } from "../../api/users";
+import { userResponse } from "../../../api/users";
 import {
-  createAppColumnHelper,
   resolveUpdater,
   useAppTable,
   useTableQueryState,
-} from "../../hooks/table/useTableContext";
-
-type Person = User;
-
-const columnHelper = createAppColumnHelper<Person>();
-
-// Columns are typed: accessor keys must exist on Person,
-// and cell/header components come from your registered registry [50]
-const columns = columnHelper.columns([
-  columnHelper.accessor("name", {
-    header: "Name",
-  }),
-  columnHelper.accessor("email", {
-    header: "Email",
-  }),
-  columnHelper.accessor("role", {
-    header: "Role",
-  }),
-  columnHelper.accessor("createdAt", {
-    header: "Created",
-    cell: (info) => new Date(info.getValue()).toLocaleDateString(),
-  }),
-]);
+} from "../../../hooks/table/useTableContext";
+import columns from "./columns";
 
 export function UsersPage() {
   // One grouped state object — sorting/filter changes reset the page atomically
   const [tableState, setTableState] = useTableQueryState();
 
-  //   const { data, isFetching } = useQuery({
-  //     queryKey: ["users", tableState],
-  //     queryFn: () => fetchUsers(tableState),
-  //     placeholderData: (prev) => prev, // keep old rows while the new page loads
-  //   });
-
   const table = useAppTable(
     {
       key: "users-page",
-      columns,
+      columns: columns(),
       data: userResponse?.rows ?? [],
       rowCount: userResponse?.rowCount, // required for manualPagination
       state: {
@@ -78,7 +50,6 @@ export function UsersPage() {
   return (
     <div>
       <h1>Users</h1>
-
       {/* AppTable wrapper provides context + subscribes to selected slices */}
       <table.AppTable
         selector={(state) => ({

@@ -44,11 +44,11 @@ export const {
 } = createTableHook({
   features,
   // Shared defaults for every table in the app
-  manualPagination: true,
-  manualSorting: true,
-  manualFiltering: true,
+  manualPagination: false,
+  manualSorting: false,
+  manualFiltering: false,
   autoResetPageIndex: false,
-  enableSortingRemoval: false,
+  enableSortingRemoval: true,
   tableComponents: { PaginationControls, RowCount },
   headerComponents: { SortIndicator, ColumnFilterInput, ColumnFilter },
 });

@@ -1,6 +1,7 @@
 import { createColumnHelper, tableFeatures } from "@tanstack/react-table";
 import type { Person } from "./basic";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const features = tableFeatures({});
 export default function columns() {
   const columnHelper = createColumnHelper<typeof features, Person>();
