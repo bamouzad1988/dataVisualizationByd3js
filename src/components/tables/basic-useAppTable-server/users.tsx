@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps, @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   resolveUpdater,
@@ -11,7 +10,7 @@ import { fetchUsers } from "../../../api/fake-users";
 export function UsersPage() {
   // One grouped state object — sorting/filter changes reset the page atomically
   const [tableState, setTableState] = useTableQueryState();
-  const [data, setData] = useState<IFakeUsers>();
+  const [data, setData] = useState<IFakeUsers[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +25,7 @@ export function UsersPage() {
       .then((result) => {
         if (controller.signal.aborted) return;
         if (Array.isArray(result)) {
-          // setData(result);
+          setData(result);
         }
         setIsLoading(false);
       })
@@ -40,42 +39,42 @@ export function UsersPage() {
     return () => controller.abort();
   }, [tableState]); // re-runs on pagination, sorting, or filter change
 
-  // const table = useAppTable(
-  //   {
-  //     key: "users-page",
-  //     columns: columns(),
-  //     data: data,
-  //     rowCount: 10,
-  //     state: {
-  //       pagination: tableState.pagination,
-  //       sorting: tableState.sorting,
-  //       columnFilters: tableState.columnFilters,
-  //     },
-  //     onPaginationChange: (updater) =>
-  //       setTableState((s) => ({
-  //         ...s,
-  //         pagination: resolveUpdater(updater, s.pagination),
-  //       })),
-  //     onSortingChange: (updater) =>
-  //       setTableState((s) => ({
-  //         ...s,
-  //         sorting: resolveUpdater(updater, s.sorting),
-  //         pagination: { ...s.pagination, pageIndex: 0 }, // reset page in same update
-  //       })),
-  //     onColumnFiltersChange: (updater) =>
-  //       setTableState((s) => ({
-  //         ...s,
-  //         columnFilters: resolveUpdater(updater, s.columnFilters),
-  //         pagination: { ...s.pagination, pageIndex: 0 },
-  //       })),
-  //   },
-  //   // Selector: only these state slices trigger re-renders of this component [50][51]
-  //   (state) => ({
-  //     pagination: state.pagination,
-  //     sorting: state.sorting,
-  //     columnFilters: state.columnFilters,
-  //   }),
-  // );
+  const table = useAppTable(
+    {
+      key: "users-page",
+      columns: columns(),
+      data: data ?? [],
+      rowCount: 10,
+      state: {
+        pagination: tableState.pagination,
+        sorting: tableState.sorting,
+        columnFilters: tableState.columnFilters,
+      },
+      onPaginationChange: (updater) =>
+        setTableState((s) => ({
+          ...s,
+          pagination: resolveUpdater(updater, s.pagination),
+        })),
+      onSortingChange: (updater) =>
+        setTableState((s) => ({
+          ...s,
+          sorting: resolveUpdater(updater, s.sorting),
+          pagination: { ...s.pagination, pageIndex: 0 }, // reset page in same update
+        })),
+      onColumnFiltersChange: (updater) =>
+        setTableState((s) => ({
+          ...s,
+          columnFilters: resolveUpdater(updater, s.columnFilters),
+          pagination: { ...s.pagination, pageIndex: 0 },
+        })),
+    },
+    // Selector: only these state slices trigger re-renders of this component [50][51]
+    (state) => ({
+      pagination: state.pagination,
+      sorting: state.sorting,
+      columnFilters: state.columnFilters,
+    }),
+  );
 
   return (
     <div>
@@ -83,7 +82,7 @@ export function UsersPage() {
       {isLoading && <span>Loading…</span>}
       {error && <span role="alert">{error}</span>}
       {/* AppTable wrapper provides context + subscribes to selected slices */}
-      {/* <table.AppTable
+      <table.AppTable
         selector={(state) => ({
           pagination: state.pagination,
           sorting: state.sorting,
@@ -134,7 +133,7 @@ export function UsersPage() {
             <table.RowCount />
           </>
         )}
-      </table.AppTable> */}
+      </table.AppTable>
     </div>
   );
 }
